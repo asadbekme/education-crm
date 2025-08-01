@@ -34,9 +34,7 @@ function LoginForm() {
       return;
     }
 
-    // The useAuthStore.login function will find the user based on username.
-    // The selectedRole here is primarily for user guidance.
-    const success = await login(username, password);
+    const success = await login(username, password, selectedRole);
 
     if (success) {
       router.push("/dashboard");

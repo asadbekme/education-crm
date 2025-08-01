@@ -292,10 +292,9 @@ export default function StudentsPage() {
           />
         </div>
 
-        {/* Students Grid */}
         <Card>
           <CardHeader>
-            <CardTitle>Talabalar ro'yxati</CardTitle>
+            <CardTitle>List of Teachers</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
