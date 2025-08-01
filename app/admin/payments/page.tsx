@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Plus, Search, Edit, DollarSign, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,8 +29,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAdminStore, type Payment } from "@/stores/admin-store";
-import { AdminLayout } from "@/components/admin-layout";
+import { useAdminStore } from "@/stores/admin-store";
+import { AdminLayout } from "@/components/layouts/admin-layout";
+import { Payment } from "@/types";
 
 export default function PaymentsPage() {
   const { payments, students, addPayment, updatePayment } = useAdminStore();

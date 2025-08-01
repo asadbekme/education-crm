@@ -2,9 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStudentStore } from "@/stores/student-store";
-import { StudentLayout } from "@/components/student-layout";
+import { StudentLayout } from "@/components/layouts/student-layout";
 import { cn } from "@/lib/utils";
-import * as LucideIcons from "lucide-react";
 
 export default function StudentAchievementsPage() {
   const { achievements } = useStudentStore();
@@ -23,10 +22,6 @@ export default function StudentAchievementsPage() {
         {/* Achievements Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {achievements.map((achievement) => {
-            const IconComponent =
-              LucideIcons[achievement.icon as keyof typeof LucideIcons] ||
-              LucideIcons.Award; // Default icon
-
             return (
               <Card
                 key={achievement.id}
@@ -51,7 +46,7 @@ export default function StudentAchievementsPage() {
                         : "bg-gray-100 text-gray-400"
                     )}
                   >
-                    {IconComponent && <IconComponent className="w-8 h-8" />}
+                    {<achievement.icon className="w-8 h-8" />}
                   </div>
                   <p className="text-sm text-gray-600">
                     {achievement.description}

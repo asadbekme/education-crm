@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import {
   Plus,
@@ -34,13 +32,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  useTeacherStore,
-  type Group,
-  type LessonDay,
-} from "@/stores/teacher-store";
+import { useTeacherStore } from "@/stores/teacher-store";
 import { useAdminStore } from "@/stores/admin-store";
-import { TeacherLayout } from "@/components/teacher-layout";
+import { TeacherLayout } from "@/components/layouts/teacher-layout";
 import {
   MultiSelector,
   MultiSelectorContent,
@@ -49,6 +43,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "@/components/ui/multi-select";
+import { Group, LessonDay } from "@/types/teacher-types";
 
 export default function TeacherGroupsPage() {
   const { groups, addGroup, updateGroup, deleteGroup, assignStudentsToGroup } =

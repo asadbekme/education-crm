@@ -5,7 +5,7 @@ import { Users, BookOpen, Calendar, Clock, Mail, Phone } from "lucide-react";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTeacherStore } from "@/stores/teacher-store";
 import { useAdminStore } from "@/stores/admin-store";
-import { StudentLayout } from "@/components/student-layout";
+import { StudentLayout } from "@/components/layouts/student-layout";
 import { Badge } from "@/components/ui/badge";
 
 export default function StudentGroupsPage() {

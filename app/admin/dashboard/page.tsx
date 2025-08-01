@@ -21,7 +21,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useAdminStore } from "@/stores/admin-store";
-import { AdminLayout } from "@/components/admin-layout";
+import { AdminLayout } from "@/components/layouts/admin-layout";
 
 const revenueData = [
   { month: "Jan", revenue: 12500 },

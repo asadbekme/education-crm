@@ -1,25 +1,44 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Plus, Search, Edit, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useAdminStore, type Student } from "@/stores/admin-store"
-import { AdminLayout } from "@/components/admin-layout"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
+import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAdminStore } from "@/stores/admin-store";
+import { AdminLayout } from "@/components/layouts/admin-layout";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Student } from "@/types/student-types";
 
 export default function StudentsPage() {
-  const { students, teachers, addStudent, updateStudent, deleteStudent } = useAdminStore()
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+  const { students, teachers, addStudent, updateStudent, deleteStudent } =
+    useAdminStore();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,16 +48,16 @@ export default function StudentsPage() {
     fee: "",
     status: "active" as "active" | "inactive",
     paymentStatus: "pending" as "paid" | "pending" | "overdue",
-  })
+  });
 
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.course.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      student.course.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const studentData = {
       name: formData.name,
@@ -49,17 +68,18 @@ export default function StudentsPage() {
       fee: Number(formData.fee),
       status: formData.status,
       paymentStatus: formData.paymentStatus,
-      joinDate: editingStudent?.joinDate || new Date().toISOString().split("T")[0],
-    }
+      joinDate:
+        editingStudent?.joinDate || new Date().toISOString().split("T")[0],
+    };
 
     if (editingStudent) {
-      updateStudent(editingStudent.id, studentData)
+      updateStudent(editingStudent.id, studentData);
     } else {
-      addStudent(studentData)
+      addStudent(studentData);
     }
 
-    resetForm()
-  }
+    resetForm();
+  };
 
   const resetForm = () => {
     setFormData({
@@ -71,13 +91,13 @@ export default function StudentsPage() {
       fee: "",
       status: "active",
       paymentStatus: "pending",
-    })
-    setEditingStudent(null)
-    setIsDialogOpen(false)
-  }
+    });
+    setEditingStudent(null);
+    setIsDialogOpen(false);
+  };
 
   const handleEdit = (student: Student) => {
-    setEditingStudent(student)
+    setEditingStudent(student);
     setFormData({
       name: student.name,
       email: student.email,
@@ -87,28 +107,28 @@ export default function StudentsPage() {
       fee: student.fee.toString(),
       status: student.status,
       paymentStatus: student.paymentStatus,
-    })
-    setIsDialogOpen(true)
-  }
+    });
+    setIsDialogOpen(true);
+  };
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this student?")) {
-      deleteStudent(id)
+      deleteStudent(id);
     }
-  }
+  };
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case "paid":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
       case "overdue":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   return (
     <AdminLayout>
@@ -129,7 +149,9 @@ export default function StudentsPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{editingStudent ? "Edit Student" : "Add New Student"}</DialogTitle>
+                <DialogTitle>
+                  {editingStudent ? "Edit Student" : "Add New Student"}
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -137,7 +159,9 @@ export default function StudentsPage() {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -147,7 +171,9 @@ export default function StudentsPage() {
                     id="email"
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -156,7 +182,9 @@ export default function StudentsPage() {
                   <Input
                     id="phone"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -165,7 +193,9 @@ export default function StudentsPage() {
                   <Input
                     id="course"
                     value={formData.course}
-                    onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, course: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -173,7 +203,9 @@ export default function StudentsPage() {
                   <Label htmlFor="teacher">Teacher</Label>
                   <Select
                     value={formData.teacher}
-                    onValueChange={(value) => setFormData({ ...formData, teacher: value })}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, teacher: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select teacher" />
@@ -193,7 +225,9 @@ export default function StudentsPage() {
                     id="fee"
                     type="number"
                     value={formData.fee}
-                    onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fee: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -202,7 +236,9 @@ export default function StudentsPage() {
                     <Label htmlFor="status">Status</Label>
                     <Select
                       value={formData.status}
-                      onValueChange={(value: "active" | "inactive") => setFormData({ ...formData, status: value })}
+                      onValueChange={(value: "active" | "inactive") =>
+                        setFormData({ ...formData, status: value })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -279,24 +315,44 @@ export default function StudentsPage() {
               <TableBody>
                 {filteredStudents.map((student) => (
                   <TableRow key={student.id}>
-                    <TableCell className="font-medium">{student.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {student.name}
+                    </TableCell>
                     <TableCell>{student.course}</TableCell>
                     <TableCell>{student.teacher}</TableCell>
                     <TableCell>{student.email}</TableCell>
                     <TableCell>{student.phone}</TableCell>
                     <TableCell>${student.fee}</TableCell>
                     <TableCell>
-                      <Badge variant={student.status === "active" ? "default" : "secondary"}>{student.status}</Badge>
+                      <Badge
+                        variant={
+                          student.status === "active" ? "default" : "secondary"
+                        }
+                      >
+                        {student.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getPaymentStatusColor(student.paymentStatus)}>{student.paymentStatus}</Badge>
+                      <Badge
+                        className={getPaymentStatusColor(student.paymentStatus)}
+                      >
+                        {student.paymentStatus}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button size="sm" variant="outline" onClick={() => handleEdit(student)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(student)}
+                        >
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDelete(student.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDelete(student.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -315,5 +371,5 @@ export default function StudentsPage() {
         )}
       </div>
     </AdminLayout>
-  )
+  );
 }

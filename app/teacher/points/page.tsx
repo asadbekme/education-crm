@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Plus, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,7 +31,7 @@ import {
 } from "@/components/ui/table";
 import { useTeacherStore } from "@/stores/teacher-store";
 import { useAdminStore } from "@/stores/admin-store";
-import { TeacherLayout } from "@/components/teacher-layout";
+import { TeacherLayout } from "@/components/layouts/teacher-layout";
 
 export default function TeacherPointsPage() {
   const { groups, studentPoints, addStudentPoint } = useTeacherStore();

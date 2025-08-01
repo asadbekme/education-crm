@@ -1,13 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Award } from "lucide-react";
 import { useStudentStore } from "@/stores/student-store";
 import { useAdminStore } from "@/stores/admin-store";
-import { StudentLayout } from "@/components/student-layout";
+import { StudentLayout } from "@/components/layouts/student-layout";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 export default function StudentShopPage() {
   const { totalPoints, studentActivities, spendPoints, earnPoints } =

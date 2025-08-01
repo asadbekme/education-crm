@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Plus, Search, Edit, Trash2, Package, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,8 +15,9 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useAdminStore, type Product } from "@/stores/admin-store";
-import { AdminLayout } from "@/components/admin-layout";
+import { useAdminStore } from "@/stores/admin-store";
+import { AdminLayout } from "@/components/layouts/admin-layout";
+import { Product } from "@/types";
 
 export default function ShopPage() {
   const { products, addProduct, updateProduct, deleteProduct } =

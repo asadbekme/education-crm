@@ -1,13 +1,6 @@
 import { create } from "zustand";
-
-export type UserRole = "admin" | "teacher" | "student";
-
-interface User {
-  id: string;
-  username: string;
-  role: UserRole;
-  name: string;
-}
+import { User, UserRole } from "@/types";
+import { mockUsers } from "@/mock/data";
 
 interface AuthState {
   user: User | null;
@@ -16,13 +9,6 @@ interface AuthState {
   logout: () => void;
   setDemoUser: (role: UserRole) => void;
 }
-
-// Mock users data
-const mockUsers: User[] = [
-  { id: "1", username: "admin", role: "admin", name: "Admin User" },
-  { id: "2", username: "teacher", role: "teacher", name: "John Teacher" },
-  { id: "3", username: "student", role: "student", name: "Jane Student" },
-];
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,

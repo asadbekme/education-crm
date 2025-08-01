@@ -1,56 +1,14 @@
 import { create } from "zustand";
-
-export interface Teacher {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  phone: string;
-  salary: number;
-  studentCount: number;
-  joinDate: string;
-  status: "active" | "inactive";
-}
-
-export interface Student {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  course: string;
-  teacher: string;
-  fee: number;
-  joinDate: string;
-  status: "active" | "inactive";
-  paymentStatus: "paid" | "pending" | "overdue";
-}
-
-export interface Payment {
-  id: string;
-  studentId: string;
-  studentName: string;
-  amount: number;
-  date: string;
-  status: "completed" | "pending" | "failed";
-  method: "cash" | "card" | "bank";
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  stock: number;
-  image: string;
-}
-
-export interface Activity {
-  id: string;
-  type: "registration" | "payment" | "product" | "teacher";
-  message: string;
-  timestamp: string;
-}
+import { Activity, Payment, Product } from "@/types";
+import { Teacher } from "@/types/teacher-types";
+import { Student } from "@/types/student-types";
+import {
+  mockActivities,
+  mockPayments,
+  mockProducts,
+  mockStudents,
+  mockTeachers,
+} from "@/mock/data";
 
 interface AdminState {
   teachers: Teacher[];
@@ -81,144 +39,6 @@ interface AdminState {
   // Activity
   addActivity: (activity: Omit<Activity, "id">) => void;
 }
-
-// Mock data
-const mockTeachers: Teacher[] = [
-  {
-    id: "1",
-    name: "John Smith",
-    email: "john@educrm.com",
-    subject: "Mathematics",
-    phone: "+1234567890",
-    salary: 2500,
-    studentCount: 12,
-    joinDate: "2024-01-15",
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    email: "sarah@educrm.com",
-    subject: "English",
-    phone: "+1234567891",
-    salary: 3000,
-    studentCount: 15,
-    joinDate: "2024-02-01",
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Mike Wilson",
-    email: "mike@educrm.com",
-    subject: "Science",
-    phone: "+1234567892",
-    salary: 1800,
-    studentCount: 8,
-    joinDate: "2024-03-10",
-    status: "active",
-  },
-  {
-    id: "4",
-    name: "Lisa Brown",
-    email: "lisa@educrm.com",
-    subject: "History",
-    phone: "+1234567893",
-    salary: 2200,
-    studentCount: 10,
-    joinDate: "2024-01-20",
-    status: "active",
-  },
-];
-
-const mockStudents: Student[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    email: "alice@student.com",
-    phone: "+1234567894",
-    course: "Math Class",
-    teacher: "John Smith",
-    fee: 500,
-    joinDate: "2024-01-20",
-    status: "active",
-    paymentStatus: "paid",
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    email: "bob@student.com",
-    phone: "+1234567895",
-    course: "English Class",
-    teacher: "Sarah Johnson",
-    fee: 450,
-    joinDate: "2024-02-15",
-    status: "active",
-    paymentStatus: "pending",
-  },
-];
-
-const mockPayments: Payment[] = [
-  {
-    id: "1",
-    studentId: "1",
-    studentName: "Alice Johnson",
-    amount: 500,
-    date: "2024-07-01",
-    status: "completed",
-    method: "card",
-  },
-  {
-    id: "2",
-    studentId: "2",
-    studentName: "Bob Smith",
-    amount: 450,
-    date: "2024-07-15",
-    status: "pending",
-    method: "cash",
-  },
-];
-
-const mockProducts: Product[] = [
-  {
-    id: "1",
-    name: "Premium Notebook",
-    description: "High-quality notebook for students",
-    price: 25,
-    category: "Stationery",
-    stock: 50,
-    image: "/notebook.png",
-  },
-  {
-    id: "2",
-    name: "Scientific Calculator",
-    description: "Advanced calculator for math classes",
-    price: 85,
-    category: "Electronics",
-    stock: 20,
-    image: "/scientific-calculator.webp",
-  },
-];
-
-const mockActivities: Activity[] = [
-  {
-    id: "1",
-    type: "registration",
-    message: "Alice Johnson registered for Math class",
-    timestamp: "2 hours ago",
-  },
-  {
-    id: "2",
-    type: "payment",
-    message: "Monthly fee payment from Bob Smith",
-    timestamp: "4 hours ago",
-  },
-  {
-    id: "3",
-    type: "product",
-    message: "Premium notebook added to shop",
-    timestamp: "6 hours ago",
-  },
-];
 
 export const useAdminStore = create<AdminState>((set, get) => ({
   teachers: mockTeachers,

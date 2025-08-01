@@ -1,21 +1,7 @@
 import { create } from "zustand";
 import { useTeacherStore } from "./teacher-store";
-
-export interface StudentActivity {
-  id: string;
-  type: "earned" | "spent";
-  message: string;
-  pointsChange: number;
-  timestamp: string;
-}
-
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: string; // Lucide icon name or path to image
-  earnedDate: string | null;
-}
+import { Achievement, StudentActivity } from "@/types/student-types";
+import { mockAchievements } from "@/mock/data";
 
 interface StudentState {
   currentStudentId: string | null;
@@ -28,38 +14,6 @@ interface StudentState {
   spendPoints: (points: number, item: string) => boolean; // Returns true if successful
   addAchievement: (achievement: Omit<Achievement, "id" | "earnedDate">) => void;
 }
-
-// Mock Achievements
-const mockAchievements: Achievement[] = [
-  {
-    id: "ach1",
-    name: "Perfect Attendance",
-    description: "Achieved perfect attendance for a month",
-    icon: "CalendarCheck",
-    earnedDate: null,
-  },
-  {
-    id: "ach2",
-    name: "Top Scorer",
-    description: "Scored 90%+ in a major exam",
-    icon: "Award",
-    earnedDate: null,
-  },
-  {
-    id: "ach3",
-    name: "Homework Master",
-    description: "Completed all homework assignments for a subject",
-    icon: "BookCheck",
-    earnedDate: null,
-  },
-  {
-    id: "ach4",
-    name: "Active Participant",
-    description: "Consistently participated in class discussions",
-    icon: "MessageSquare",
-    earnedDate: null,
-  },
-];
 
 export const useStudentStore = create<StudentState>((set, get) => ({
   currentStudentId: null,

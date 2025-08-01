@@ -18,13 +18,10 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTeacherStore } from "@/stores/teacher-store";
-import { useAdminStore } from "@/stores/admin-store";
-import { TeacherLayout } from "@/components/teacher-layout";
+import { TeacherLayout } from "@/components/layouts/teacher-layout";
 
 export default function TeacherDashboard() {
-  const { groups, lessons, attendanceRecords, teacherActivities } =
-    useTeacherStore();
-  const { students } = useAdminStore();
+  const { groups, attendanceRecords, teacherActivities } = useTeacherStore();
 
   const totalStudents = groups.reduce(
     (sum, group) => sum + group.studentIds.length,

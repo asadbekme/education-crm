@@ -1,56 +1,20 @@
 import { create } from "zustand";
-
-export type LessonDay =
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
-  | "Sunday";
-
-export interface Group {
-  id: string;
-  name: string;
-  subject: string;
-  lessonTime: string; // e.g., "09:00 - 10:30"
-  lessonDays: LessonDay[];
-  studentIds: string[]; // Array of student IDs
-  active: boolean;
-}
-
-export interface Lesson {
-  id: string;
-  groupId: string;
-  topic: string;
-  date: string; // YYYY-MM-DD
-  homework: string;
-}
-
-export interface AttendanceRecord {
-  id: string;
-  lessonId: string;
-  groupId: string;
-  studentId: string;
-  date: string; // YYYY-MM-DD
-  status: "present" | "absent" | "late";
-}
-
-export interface StudentPoint {
-  id: string;
-  studentId: string;
-  groupId: string;
-  points: number;
-  reason: string;
-  date: string; // YYYY-MM-DD
-}
-
-export interface TeacherActivity {
-  id: string;
-  type: "lesson" | "homework" | "attendance" | "group" | "point";
-  message: string;
-  timestamp: string;
-}
+import {
+  AttendanceRecord,
+  Group,
+  Lesson,
+  StudentPoint,
+  TeacherActivity,
+} from "@/types/teacher-types";
+import { Student } from "@/types/student-types";
+import {
+  mockAttendanceRecords,
+  mockGroups,
+  mockLessons,
+  mockStudentPoints,
+  mockTeacherActivities,
+  mockStudents,
+} from "@/mock/data";
 
 interface TeacherState {
   groups: Group[];
@@ -58,6 +22,7 @@ interface TeacherState {
   attendanceRecords: AttendanceRecord[];
   studentPoints: StudentPoint[];
   teacherActivities: TeacherActivity[];
+  students: Student[];
 
   // Group CRUD
   addGroup: (group: Omit<Group, "id" | "active">) => void;
@@ -86,175 +51,13 @@ interface TeacherState {
   addTeacherActivity: (activity: Omit<TeacherActivity, "id">) => void;
 }
 
-// Mock Data
-const mockGroups: Group[] = [
-  {
-    id: "g1",
-    name: "Math A",
-    subject: "Mathematics",
-    lessonTime: "09:00 - 10:30",
-    lessonDays: ["Monday", "Wednesday", "Friday"],
-    studentIds: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"], // Alice, Bob, Carol, David, Eva, etc.
-    active: true,
-  },
-  {
-    id: "g2",
-    name: "Math B",
-    subject: "Mathematics",
-    lessonTime: "14:00 - 15:30",
-    lessonDays: ["Tuesday", "Thursday"],
-    studentIds: ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22"],
-    active: true,
-  },
-  {
-    id: "g3",
-    name: "Physics A",
-    subject: "Physics",
-    lessonTime: "11:00 - 12:30",
-    lessonDays: ["Monday", "Wednesday"],
-    studentIds: ["1", "2", "23", "24", "25", "26", "27", "28"],
-    active: true,
-  },
-  {
-    id: "g4",
-    name: "Chemistry A",
-    subject: "Chemistry",
-    lessonTime: "16:00 - 17:30",
-    lessonDays: ["Tuesday", "Saturday"],
-    studentIds: [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-    ],
-    active: true,
-  },
-];
-
-const mockLessons: Lesson[] = [
-  {
-    id: "l1",
-    groupId: "g1",
-    topic: "Introduction to Algebra",
-    date: "2024-01-15",
-    homework: "Complete exercises 1-10 in Chapter 2",
-  },
-  {
-    id: "l2",
-    groupId: "g1",
-    topic: "Linear Equations",
-    date: "2024-01-17",
-    homework: "Solve problems 1-15 in workbook",
-  },
-  {
-    id: "l3",
-    groupId: "g3",
-    topic: "Newton's Laws of Motion",
-    date: "2024-01-16",
-    homework: "Read Chapter 3 and answer questions",
-  },
-];
-
-const mockAttendanceRecords: AttendanceRecord[] = [
-  {
-    id: "a1",
-    lessonId: "l1",
-    groupId: "g1",
-    studentId: "1",
-    date: "2024-01-15",
-    status: "present",
-  },
-  {
-    id: "a2",
-    lessonId: "l1",
-    groupId: "g1",
-    studentId: "2",
-    date: "2024-01-15",
-    status: "present",
-  },
-  {
-    id: "a3",
-    lessonId: "l1",
-    groupId: "g1",
-    studentId: "3",
-    date: "2024-01-15",
-    status: "absent",
-  },
-  {
-    id: "a4",
-    lessonId: "l3",
-    groupId: "g3",
-    studentId: "1",
-    date: "2024-01-16",
-    status: "present",
-  },
-  {
-    id: "a5",
-    lessonId: "l3",
-    groupId: "g3",
-    studentId: "2",
-    date: "2024-01-16",
-    status: "late",
-  },
-];
-
-const mockStudentPoints: StudentPoint[] = [
-  {
-    id: "p1",
-    studentId: "1",
-    groupId: "g1",
-    points: 10,
-    reason: "Participated actively in class",
-    date: "2024-07-20",
-  },
-  {
-    id: "p2",
-    studentId: "2",
-    groupId: "g1",
-    points: 5,
-    reason: "Completed extra homework",
-    date: "2024-07-22",
-  },
-];
-
-const mockTeacherActivities: TeacherActivity[] = [
-  {
-    id: "ta1",
-    type: "lesson",
-    message: "Advanced Calculus - Math A group lesson completed",
-    timestamp: "1 hour ago",
-  },
-  {
-    id: "ta2",
-    type: "homework",
-    message: "15 students submitted Physics homework",
-    timestamp: "3 hours ago",
-  },
-  {
-    id: "ta3",
-    type: "attendance",
-    message: "Attendance taken Chemistry A - 14/15 students present",
-    timestamp: "5 hours ago",
-  },
-];
-
 export const useTeacherStore = create<TeacherState>((set, get) => ({
   groups: mockGroups,
   lessons: mockLessons,
   attendanceRecords: mockAttendanceRecords,
   studentPoints: mockStudentPoints,
   teacherActivities: mockTeacherActivities,
+  students: mockStudents,
 
   // Group CRUD
   addGroup: (group) => {

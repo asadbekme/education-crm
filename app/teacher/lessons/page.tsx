@@ -1,9 +1,7 @@
 "use client";
 
-import type React from "react";
-import { Users } from "lucide-react"; // Import Users component
-
 import { useState } from "react";
+import { Users } from "lucide-react";
 import { Plus, BookOpen, Calendar, Edit, Trash2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,8 +30,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useTeacherStore, type Lesson } from "@/stores/teacher-store";
-import { TeacherLayout } from "@/components/teacher-layout";
+import { useTeacherStore } from "@/stores/teacher-store";
+import { TeacherLayout } from "@/components/layouts/teacher-layout";
+import { Lesson } from "@/types/teacher-types";
 
 export default function TeacherLessonsPage() {
   const { groups, lessons, addLesson, updateLesson, deleteLesson } =

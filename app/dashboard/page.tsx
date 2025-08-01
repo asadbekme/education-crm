@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
-import { useStudentStore } from "@/stores/student-store"; // Import useStudentStore
+import { useStudentStore } from "@/stores/student-store";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { CheckCircle, XCircle, Clock, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +23,8 @@ import {
 } from "@/components/ui/table";
 import { useTeacherStore } from "@/stores/teacher-store";
 import { useAdminStore } from "@/stores/admin-store";
-import { TeacherLayout } from "@/components/teacher-layout";
+import { TeacherLayout } from "@/components/layouts/teacher-layout";
 import { Badge } from "@/components/ui/badge";
-import React from "react";
 
 export default function TeacherAttendancePage() {
   const {
@@ -50,7 +49,7 @@ export default function TeacherAttendancePage() {
   const availableLessons = lessons.filter(
     (lesson) => lesson.groupId === selectedGroup
   );
-  const studentsInSelectedGroup = React.useMemo(() => {
+  const studentsInSelectedGroup = useMemo(() => {
     return selectedGroup
       ? students.filter((s) =>
           groups.find((g) => g.id === selectedGroup)?.studentIds.includes(s.id)

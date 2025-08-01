@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Award,
@@ -26,9 +27,8 @@ import {
 import { useAuthStore } from "@/stores/auth-store";
 import { useStudentStore } from "@/stores/student-store";
 import { useTeacherStore } from "@/stores/teacher-store";
-import { useAdminStore } from "@/stores/admin-store"; // Import useAdminStore
-import { StudentLayout } from "@/components/student-layout";
-import Link from "next/link";
+import { useAdminStore } from "@/stores/admin-store";
+import { StudentLayout } from "@/components/layouts/student-layout";
 import { cn } from "@/lib/utils";
 
 export default function StudentDashboard() {
