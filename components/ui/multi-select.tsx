@@ -7,6 +7,14 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CommandGroup, CommandItem } from "@/components/ui/command";
 
+interface MultiSelectorState {
+  values: string[];
+  onValuesChange: (values: string[]) => void;
+  setInputValue: (value: string) => void;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}
+
 const MultiSelector = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive> & {
@@ -53,11 +61,14 @@ const MultiSelectorTrigger = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<"div">
 >(({ className, children, ...props }, ref) => {
-  const { values, onValuesChange } = useCommandState() as any;
+  const commandState = useCommandState((state: any) => state);
+  const { values, onValuesChange } = (commandState as MultiSelectorState) || { values: [], onValuesChange: () => { } };
   const [isFocused, setIsFocused] = React.useState(false);
 
   const handleRemove = (value: string) => {
-    onValuesChange(values.filter((v: string) => v !== value));
+    if (onValuesChange && Array.isArray(values)) {
+      onValuesChange(values.filter((v: string) => v !== value));
+    }
   };
 
   return (
@@ -92,7 +103,8 @@ const MultiSelectorInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => {
-  const { setInputValue, open } = useCommandState() as any;
+  const commandState = useCommandState((state: any) => state);
+  const { setInputValue, setOpen } = (commandState as MultiSelectorState) || { setInputValue: () => { }, setOpen: () => { } };
   return (
     <CommandPrimitive.Input
       ref={ref}
@@ -100,8 +112,8 @@ const MultiSelectorInput = React.forwardRef<
         "flex-1 bg-transparent p-0 outline-none placeholder:text-muted-foreground",
         className
       )}
-      onFocus={() => open(true)}
-      onBlur={() => open(false)}
+      onFocus={() => setOpen?.(true)}
+      onBlur={() => setOpen?.(false)}
       {...props}
     />
   );
@@ -113,7 +125,8 @@ const MultiSelectorContent = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
 >(({ className, children, ...props }, ref) => {
-  const { open } = useCommandState() as any;
+  const commandState = useCommandState((state: any) => state);
+  const { open } = (commandState as MultiSelectorState) || { open: false };
   return (
     <CommandPrimitive.List
       ref={ref}
@@ -135,27 +148,31 @@ const MultiSelectorList = React.forwardRef<
   React.ElementRef<typeof CommandGroup>,
   React.ComponentPropsWithoutRef<typeof CommandGroup>
 >(({ className, children, ...props }, ref) => {
-  const { values, onValuesChange } = useCommandState() as any;
+  const commandState = useCommandState((state: any) => state);
+  const { values, onValuesChange } = (commandState as MultiSelectorState) || { values: [], onValuesChange: () => { } };
   return (
     <CommandGroup ref={ref} className={cn("p-1", className)} {...props}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
+          const childProps = child.props as { value?: string; children?: React.ReactNode };
           return React.cloneElement(child, {
             onSelect: () => {
-              onValuesChange(
-                values.includes(child.props.value)
-                  ? values.filter((v: string) => v !== child.props.value)
-                  : [...values, child.props.value]
-              );
+              if (onValuesChange && Array.isArray(values) && childProps.value) {
+                onValuesChange(
+                  values.includes(childProps.value)
+                    ? values.filter((v: string) => v !== childProps.value)
+                    : [...values, childProps.value]
+                );
+              }
             },
             children: (
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={values.includes(child.props.value)}
+                  checked={Array.isArray(values) && childProps.value ? values.includes(childProps.value) : false}
                   readOnly
                 />
-                {child.props.children}
+                {childProps.children}
               </div>
             ),
           } as React.HTMLProps<HTMLDivElement>);
