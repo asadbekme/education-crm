@@ -62,7 +62,10 @@ const MultiSelectorTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<"div">
 >(({ className, children, ...props }, ref) => {
   const commandState = useCommandState((state: any) => state);
-  const { values, onValuesChange } = (commandState as MultiSelectorState) || { values: [], onValuesChange: () => { } };
+  const { values, onValuesChange } = (commandState as MultiSelectorState) || {
+    values: [],
+    onValuesChange: () => {},
+  };
   const [isFocused, setIsFocused] = React.useState(false);
 
   const handleRemove = (value: string) => {
@@ -104,7 +107,10 @@ const MultiSelectorInput = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => {
   const commandState = useCommandState((state: any) => state);
-  const { setInputValue, setOpen } = (commandState as MultiSelectorState) || { setInputValue: () => { }, setOpen: () => { } };
+  const { setInputValue, setOpen } = (commandState as MultiSelectorState) || {
+    setInputValue: () => {},
+    setOpen: () => {},
+  };
   return (
     <CommandPrimitive.Input
       ref={ref}
@@ -149,12 +155,18 @@ const MultiSelectorList = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandGroup>
 >(({ className, children, ...props }, ref) => {
   const commandState = useCommandState((state: any) => state);
-  const { values, onValuesChange } = (commandState as MultiSelectorState) || { values: [], onValuesChange: () => { } };
+  const { values, onValuesChange } = (commandState as MultiSelectorState) || {
+    values: [],
+    onValuesChange: () => {},
+  };
   return (
     <CommandGroup ref={ref} className={cn("p-1", className)} {...props}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          const childProps = child.props as { value?: string; children?: React.ReactNode };
+          const childProps = child.props as {
+            value?: string;
+            children?: React.ReactNode;
+          };
           return React.cloneElement(child, {
             onSelect: () => {
               if (onValuesChange && Array.isArray(values) && childProps.value) {
@@ -169,7 +181,11 @@ const MultiSelectorList = React.forwardRef<
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={Array.isArray(values) && childProps.value ? values.includes(childProps.value) : false}
+                  checked={
+                    Array.isArray(values) && childProps.value
+                      ? values.includes(childProps.value)
+                      : false
+                  }
                   readOnly
                 />
                 {childProps.children}

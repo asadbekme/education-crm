@@ -31,51 +31,49 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Student } from "@/types/student-types";
+import { Teacher } from "@/types/teacher-types";
 
-export default function StudentsPage() {
-  const { students, teachers, addStudent, updateStudent, deleteStudent } =
+export default function TeachersPage() {
+  const { teachers, addTeacher, updateTeacher, deleteTeacher } =
     useAdminStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    course: "",
-    teacher: "",
-    fee: "",
+    subject: "",
+    salary: "",
+    studentCount: "",
     status: "active" as "active" | "inactive",
-    paymentStatus: "pending" as "paid" | "pending" | "overdue",
   });
 
-  const filteredStudents = students.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.course.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTeachers = teachers.filter(
+    (teacher) =>
+      teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.subject.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const studentData = {
+    const teacherData = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      course: formData.course,
-      teacher: formData.teacher,
-      fee: Number(formData.fee),
+      subject: formData.subject,
+      salary: Number(formData.salary),
+      studentCount: Number(formData.studentCount),
       status: formData.status,
-      paymentStatus: formData.paymentStatus,
       joinDate:
-        editingStudent?.joinDate || new Date().toISOString().split("T")[0],
+        editingTeacher?.joinDate || new Date().toISOString().split("T")[0],
     };
 
-    if (editingStudent) {
-      updateStudent(editingStudent.id, studentData);
+    if (editingTeacher) {
+      updateTeacher(editingTeacher.id, teacherData);
     } else {
-      addStudent(studentData);
+      addTeacher(teacherData);
     }
 
     resetForm();
@@ -86,44 +84,40 @@ export default function StudentsPage() {
       name: "",
       email: "",
       phone: "",
-      course: "",
-      teacher: "",
-      fee: "",
+      subject: "",
+      salary: "",
+      studentCount: "",
       status: "active",
-      paymentStatus: "pending",
     });
-    setEditingStudent(null);
+    setEditingTeacher(null);
     setIsDialogOpen(false);
   };
 
-  const handleEdit = (student: Student) => {
-    setEditingStudent(student);
+  const handleEdit = (teacher: Teacher) => {
+    setEditingTeacher(teacher);
     setFormData({
-      name: student.name,
-      email: student.email,
-      phone: student.phone,
-      course: student.course,
-      teacher: student.teacher,
-      fee: student.fee.toString(),
-      status: student.status,
-      paymentStatus: student.paymentStatus,
+      name: teacher.name,
+      email: teacher.email,
+      phone: teacher.phone,
+      subject: teacher.subject,
+      salary: teacher.salary.toString(),
+      studentCount: teacher.studentCount.toString(),
+      status: teacher.status,
     });
     setIsDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this student?")) {
-      deleteStudent(id);
+    if (confirm("Are you sure you want to delete this teacher?")) {
+      deleteTeacher(id);
     }
   };
 
-  const getPaymentStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "paid":
+      case "active":
         return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "overdue":
+      case "inactive":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -136,21 +130,21 @@ export default function StudentsPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-            <p className="text-gray-600">Manage student enrollments</p>
+            <h1 className="text-2xl font-bold text-gray-900">Teachers</h1>
+            <p className="text-gray-600">Manage teacher information</p>
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => setEditingStudent(null)}>
+              <Button onClick={() => setEditingTeacher(null)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add Student
+                Add Teacher
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {editingStudent ? "Edit Student" : "Add New Student"}
+                  {editingTeacher ? "Edit Teacher" : "Add New Teacher"}
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -189,88 +183,60 @@ export default function StudentsPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="course">Course</Label>
+                  <Label htmlFor="subject">Subject</Label>
                   <Input
-                    id="course"
-                    value={formData.course}
+                    id="subject"
+                    value={formData.subject}
                     onChange={(e) =>
-                      setFormData({ ...formData, course: e.target.value })
+                      setFormData({ ...formData, subject: e.target.value })
                     }
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="teacher">Teacher</Label>
+                  <Label htmlFor="salary">Monthly Salary ($)</Label>
+                  <Input
+                    id="salary"
+                    type="number"
+                    value={formData.salary}
+                    onChange={(e) =>
+                      setFormData({ ...formData, salary: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="studentCount">Students Assigned</Label>
+                  <Input
+                    id="studentCount"
+                    type="number"
+                    value={formData.studentCount}
+                    onChange={(e) =>
+                      setFormData({ ...formData, studentCount: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="status">Status</Label>
                   <Select
-                    value={formData.teacher}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, teacher: value })
+                    value={formData.status}
+                    onValueChange={(value: "active" | "inactive") =>
+                      setFormData({ ...formData, status: value })
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select teacher" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {teachers.map((teacher) => (
-                        <SelectItem key={teacher.id} value={teacher.name}>
-                          {teacher.name} - {teacher.subject}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="fee">Monthly Fee ($)</Label>
-                  <Input
-                    id="fee"
-                    type="number"
-                    value={formData.fee}
-                    onChange={(e) =>
-                      setFormData({ ...formData, fee: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="status">Status</Label>
-                    <Select
-                      value={formData.status}
-                      onValueChange={(value: "active" | "inactive") =>
-                        setFormData({ ...formData, status: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="paymentStatus">Payment Status</Label>
-                    <Select
-                      value={formData.paymentStatus}
-                      onValueChange={(value: "paid" | "pending" | "overdue") =>
-                        setFormData({ ...formData, paymentStatus: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="paid">Paid</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="overdue">Overdue</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1">
-                    {editingStudent ? "Update" : "Add"} Student
+                    {editingTeacher ? "Update" : "Add"} Teacher
                   </Button>
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancel
@@ -285,7 +251,7 @@ export default function StudentsPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search students..."
+            placeholder="Search teachers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -301,56 +267,46 @@ export default function StudentsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Course</TableHead>
-                  <TableHead>Teacher</TableHead>
+                  <TableHead>Subject</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
-                  <TableHead>Fee</TableHead>
+                  <TableHead>Salary</TableHead>
+                  <TableHead>Students</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Payment Status</TableHead>
+                  <TableHead>Join Date</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((student) => (
-                  <TableRow key={student.id}>
+                {filteredTeachers.map((teacher) => (
+                  <TableRow key={teacher.id}>
                     <TableCell className="font-medium">
-                      {student.name}
+                      {teacher.name}
                     </TableCell>
-                    <TableCell>{student.course}</TableCell>
-                    <TableCell>{student.teacher}</TableCell>
-                    <TableCell>{student.email}</TableCell>
-                    <TableCell>{student.phone}</TableCell>
-                    <TableCell>${student.fee}</TableCell>
+                    <TableCell>{teacher.subject}</TableCell>
+                    <TableCell>{teacher.email}</TableCell>
+                    <TableCell>{teacher.phone}</TableCell>
+                    <TableCell>${teacher.salary}</TableCell>
+                    <TableCell>{teacher.studentCount}</TableCell>
                     <TableCell>
-                      <Badge
-                        variant={
-                          student.status === "active" ? "default" : "secondary"
-                        }
-                      >
-                        {student.status}
+                      <Badge className={getStatusColor(teacher.status)}>
+                        {teacher.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge
-                        className={getPaymentStatusColor(student.paymentStatus)}
-                      >
-                        {student.paymentStatus}
-                      </Badge>
-                    </TableCell>
+                    <TableCell>{teacher.joinDate}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleEdit(student)}
+                          onClick={() => handleEdit(teacher)}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDelete(student.id)}
+                          onClick={() => handleDelete(teacher.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -363,9 +319,9 @@ export default function StudentsPage() {
           </CardContent>
         </Card>
 
-        {filteredStudents.length === 0 && (
+        {filteredTeachers.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No students found</p>
+            <p className="text-gray-500">No teachers found</p>
           </div>
         )}
       </div>
