@@ -1,5 +1,6 @@
 "use client";
 
+import { Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash2 } from "lucide-react";
 import { Teacher } from "@/types/teacher-types";
 
 type TeachersTableProps = {
@@ -30,11 +30,7 @@ function getStatusColor(status: string) {
   }
 }
 
-export function TeachersTable({
-  teachers,
-  onEdit,
-  onDelete,
-}: TeachersTableProps) {
+function TeachersTable({ teachers, onEdit, onDelete }: TeachersTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -72,14 +68,14 @@ export function TeachersTable({
                   variant="outline"
                   onClick={() => onEdit(teacher)}
                 >
-                  <Edit className="w-4 h-4" />
+                  <Edit className="size-4" />
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onDelete(teacher.id)}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               </div>
             </TableCell>
@@ -89,3 +85,5 @@ export function TeachersTable({
     </Table>
   );
 }
+
+export default TeachersTable;

@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminStore } from "@/stores/admin-store";
 import { AdminLayout } from "@/components/layouts/admin-layout";
 import { Teacher } from "@/types/teacher-types";
-import { TeachersTable } from "./fragments/teachers-table";
-import { TeacherFormDialog } from "./fragments/teacher-form-dialog";
+import { TeacherFormDialog, TeachersTable } from "./fragments";
+import { TeacherFormValues } from "./fragments/teacher.schema";
 
 export default function TeachersPage() {
   const { teachers, addTeacher, updateTeacher, deleteTeacher } =
@@ -24,15 +24,7 @@ export default function TeachersPage() {
   );
 
   const handleFormSubmit = (
-    formData: {
-      name: string;
-      email: string;
-      phone: string;
-      subject: string;
-      salary: string;
-      studentCount: string;
-      status: "active" | "inactive";
-    },
+    formData: TeacherFormValues,
     teacherToEdit: Teacher | null
   ) => {
     const teacherData = {
@@ -85,7 +77,7 @@ export default function TeachersPage() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-gray-400" />
           <Input
             placeholder="Search teachers..."
             value={searchTerm}

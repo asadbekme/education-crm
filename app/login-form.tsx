@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,29 +14,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useAuthStore } from "@/stores/auth-store";
 import { UserRole } from "@/types";
+import { loginFormSchema, LoginFormValues } from "./login.schema";
 
 function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState<UserRole>("admin"); // Default to admin
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const { login, isLoading } = useAuthStore();
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      role: "admin", // Default role
+    },
+  });
+
+  const handleLogin = async (values: LoginFormValues) => {
     setError("");
 
-    if (!username || !password || !selectedRole) {
-      setError("Please fill in all the fields and select a role.");
-      return;
-    }
-
-    const success = await login(username, password, selectedRole);
+    const success = await login(
+      values.username,
+      values.password,
+      values.role as UserRole
+    );
 
     if (success) {
       router.push("/dashboard");
@@ -44,90 +59,108 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6">
-      <div>
-        <label
-          htmlFor="username"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Username
-        </label>
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            id="username"
-            type="text"
-            placeholder="Enter a username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="pl-10 h-12"
-            disabled={isLoading}
-          />
-        </div>
-      </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
+        {/* Username Field */}
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 size-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Enter a username"
+                    className="pl-10 h-12"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Password
-        </label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter a password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="pl-10 pr-10 h-12"
-            disabled={isLoading}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            disabled={isLoading}
-          >
-            {showPassword ? (
-              <EyeOff className="size-5" />
-            ) : (
-              <Eye className="size-5" />
-            )}
-          </button>
-        </div>
-      </div>
+        {/* Password Field */}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 size-5 text-gray-400" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter a password"
+                    className="pl-10 pr-10 h-12"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    disabled={isLoading}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-5" />
+                    ) : (
+                      <Eye className="size-5" />
+                    )}
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div>
-        <label
-          htmlFor="role"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Role
-        </label>
-        <Select
-          value={selectedRole}
-          onValueChange={(value: UserRole) => setSelectedRole(value)}
-          disabled={isLoading}
-        >
-          <SelectTrigger className="h-12">
-            <SelectValue placeholder="Select a role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="teacher">Teacher</SelectItem>
-            <SelectItem value="student">Student</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        {/* Role Field */}
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <FormControl>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      {error && <div className="text-red-600 text-sm text-center">{error}</div>}
+        {/* Server Error Display */}
+        {error && (
+          <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
 
-      <Button type="submit" className="w-full h-12" disabled={isLoading}>
-        {isLoading ? "Loading..." : "Login"}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full h-12" disabled={isLoading}>
+          {isLoading ? "Loading..." : "Login"}
+        </Button>
+      </form>
+    </Form>
   );
 }
 
